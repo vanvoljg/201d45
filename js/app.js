@@ -175,3 +175,33 @@ default:
   coding = 'no';
   console.log('coding:' + coding, 'count:' + count);
 }
+
+// Game complete, now display results.
+// Pop up an alert with all given responses and the user's final score
+alert('Hey, ' + username + ', you finished the game! Let\'s see how you did.');
+alert('Question 1: "Do I like games?" You said ' + games + '\n\
+Question 2: "How about trees, are they cool?" You said ' + trees +'\n\
+Question 3: "Would I like a cookie?" You said ' + cookie + '\n\
+Question 4: "Is napping an important part of my day?" You said ' + nap + '\n\
+Question 5: "Coding is cool, right?" You said ' + coding);
+alert('You got ' + count + ' of 5 correct');
+// Then add some flavor for how well they did
+switch (count) {
+case 0:
+  alert('I don\'t think you know me at all....');
+  break;
+case 1:
+  alert('Not so good....');
+  break;
+case 2:
+  alert('Fewer than half correct.');
+  break;
+case 3:
+  alert('More than half right. Not too bad.');
+  break;
+case 4:
+  alert('Only one wrong, nice!');
+  break;
+default:
+  alert('You got them all right! Great!');
+}
