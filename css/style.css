@@ -26,7 +26,6 @@ article {
 }
 
 #game_sec>li {
-  list-style: inside decimal;
   width: 100%;
   overflow: auto;
 }
