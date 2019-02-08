@@ -1,4 +1,7 @@
 
+/* * {
+  outline: red 1px dashed;
+} */
 body {
   width: 900px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -25,16 +28,23 @@ article {
   line-height: 1.3;
 }
 
-#game_sec>li {
+#game_sec {
+  overflow: auto;
+  width: 100%;
+}
+#game_sec li ul{
+  display: inline-block;
   width: 100%;
   overflow: auto;
 }
-
-#game_sec>li li {
+#game_sec li ul li{
+  display: inline-block;
   list-style: none;
   float: left;
-  clear: left;
-  width: 33.3%;
+  width: 40%;
+}
+#game_sec li ul li:nth-child(even){
+  width: 60%;
 }
 
 .title {
@@ -56,7 +66,3 @@ article {
   margin: 10px;
 }
 
-
-/* * {
-  outline: red 1px dashed;
-} */
