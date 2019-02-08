@@ -11,6 +11,7 @@ How about trees, are they cool? (yes)
 Would I like a cookie? (yes)
 Is napping an important part of my day? (no)
 Coding is cool, right? (yes)
+Guess a random integer between 1 and 20: (random())
 
 For each question, take a prompt which allows only four results, two true and
 two false:
@@ -24,21 +25,52 @@ the only two responses any of these variables should end up with at the end.
 
 Each correct response increments count.
 
-At the very end, print all responses and the number correct out of 5
+At the very end, print all responses and the number correct out of answers.length
+Random integer is from 1 to 20. Math.random() returns in a range [0,1), so multiply
+by 20, to get from [0,19), then add 1 to get 1 to 20.
 */
 
 var username, games, trees, cookie, nap, coding, count = 0;
+var random_number = Math.floor(Math.random() * 20) + 1;
+var questions = [
+  'Do I like games? Y/Yes or N/No',
+  'How about trees, are they cool?',
+  'Would I like a cookie?',
+  'Is napping an important part of my day?',
+  'Coding is cool, right?',
+  'Guess an integer between 1 and 20',
+  'What is a movie that I\'ve watched?'
+];
+var answers = [
+  'Yes', 'Yes', 'Yes', 'No', 'Yes',
+  random_number,
+  [
+    'The Matrix',
+    'Big Trouble In Little China',
+    'Serenity',
+    'Fellowship Of The Ring',
+    'Venom',
+    'Kingsmen',
+    'Fast and Furious',
+    'Zootopia',
+    'The Fantastic Mr. Fox'
+  ]
+];
+var responses = Array(7);
 
 // Ask for username
+console.log('Ask for name. var username');
 username = prompt('What is your name?');
 console.log('username:' + username);
 
 // If no username (or they click cancel), then ask again
 if (username === '' | username === null) {
+  console.log('username is invalid, ask again');
   username = prompt('No, really, what\'s your name?');
   console.log('username:' + username);
 }
 if (username === '' | username === null) {
+  console.log('username still invalid, so using default');
   username = 'George McSqueeb';
   console.log('username:' + username);
 }
@@ -46,13 +78,14 @@ alert('Good to meet you, ' + username + '. Let\'s play a game!');
 
 // Do I like games? (yes)
 // Store result in games
-games = prompt('Do I like games? Y/Yes or N/No');
-console.log('games:' + games);
+console.log('Ask if I like games. var games')
+answers[0] = prompt(questions[0]);
+console.log('games:' + answers[0]);
 
 // Anything other than a string counts as no, store 'no' in games
 if (typeof(games) !== 'string') {
-  games = 'no';
-  console.log('games:' + games);
+  answers[0] = 'no';
+  console.log('games:' + answers[0]);
 }
 
 // Games is guaranteed to be a string at this point. Convert to lowercase.
