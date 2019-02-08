@@ -7,13 +7,19 @@
   <title>A Guessing Game</title>
 
   <!-- First load reset css file to remove formatting -->
-  <link href="./css/reset.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="./css/reset.css" type="text/css" />
   <!-- Then load our styles -->
-  <link href="./css/style.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="./css/style.css" type="text/css" />
 
 </head>
 <body>
   <header>
+    <nav>
+      <ul>
+        <li><a href="./index.html">Profile</a></li>
+        <li>About Me</li>
+      </ul>
+    </nav>
     <h1 class="title">About Me</h1>
     <h2 class="subtitle">A guessing game</h2>
   </header>
@@ -23,7 +29,7 @@
   <div class="content">
     <article>
       <h3 class="section_title">Questions:</h3>
-      <ol>
+      <ol id="game_sec">
         <li>Do I like games?</li>
         <li>How about trees, are they cool?</li>
         <li>Would I like a cookie?</li>
