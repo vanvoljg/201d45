@@ -1,38 +1,45 @@
+
 body {
   width: 900px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   font-size: 16px;
   color: black;
-  padding: 10px;
 }
 header {
   text-align: center;
-  padding: 5px;
+  padding: 10px;
+}
+article {
+  padding: 10px;
+}
+ol {
+  list-style: inside decimal;
+}
+ul {
+  list-style: inside;
+}
+li {
+  padding-bottom: 5px;
 }
 .title {
   font-size: 36px;
   font-weight: bold;
-  padding: 5px;
 }
 .subtitle {
   font-size: 24px;
   font-weight: italic;
-  padding: 5px;
 }
 .section_title {
   font-size: 20px;
   font-weight: bold;
-  padding-bottom: 0;
+  padding: 5px 0 15px 0;
 }
 .hr {
-  width: inherit;
   height: 1px;
   background: black;
-  margin-top: 10px;
-  margin-bottom: 10px;
+  margin: 10px;
 }
-ol {
-  list-style-type: decimal;
-  padding-left: 10px;
-  float: left;
-}
+
+/* * {
+  outline: red 1px dashed;
+} */
