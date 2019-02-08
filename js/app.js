@@ -90,7 +90,7 @@ if (typeof(games) !== 'string') {
 
 // Games is guaranteed to be a string at this point. Convert to lowercase.
 // Check for 'yes' cases, otherwise change games to 'no'
-games = games.toLowerCase();
+games = answers[0].toLowerCase();
 console.log('games:' + games);
 switch (games) {
 case 'y':
