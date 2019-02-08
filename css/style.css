@@ -18,8 +18,16 @@ ol {
 ul {
   list-style: inside;
 }
-li {
+/* li {
   padding-bottom: 5px;
+} */
+article {
+  line-height: 1.3;
+}
+
+ul.navbar {
+  list-style: none
+  display:inline-block
 }
 .title {
   font-size: 36px;
