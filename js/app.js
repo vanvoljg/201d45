@@ -12,14 +12,11 @@ Would I like a cookie? (yes)
 Is napping an important part of my day? (no)
 Coding is cool, right? (yes)
 Guess a random integer between 1 and 20: (random())
+Guess a movie I've watched
 
-For each question, take a prompt which allows only four results, two true and
-two false:
-true: 'y', 'yes'
-false: 'n', and 'no'
-All other responses will default to an incorrect result, whatever that may be
-Capitalization doesn't matter, the toLowerCase() method gets called
-for all responses.
+For each true/false question, take a prompt which allows anything beginning with
+'y' to mean true and allows anything starting wtih 'n' to mean false. Case does
+not matter.
 During response checks, correct responses are normalized: 'yes' or 'no' are
 the only two responses any of these variables should end up with at the end.
 
@@ -43,12 +40,19 @@ var random_number = Math.floor(Math.random() * 20) + 1;
 // the HTML page.
 // For example, game_section.innerHTML lets you get or set the HTML inside of the
 // game section.
-
 var game_section = document.querySelector('#game_section');
+var game_question_template = document.querySelector('#question_template');
+
 var newli_newul_newli = '<li>\n<ul>\n<li>';
 var endli_newli = '</li>\n<li>';
 var endli_endul_endli = '</li>\n</ul>\n</li>';
 var yes_or_no = ' Y/Yes or N/No';
+// regular expressions are a fancy way of matching and explanation of their use
+// is beyond the scope of this document.
+// Find more information at https://www.regular-expressions.info/quickstart.html
+// Also at https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
+var valid_yes = [/\s*y\s*/i, /\s*y[ea][ps]?\s*/i];
+var valid_no = [/\s*n\s*/i, /\s*nay?\s*/i, /\s*nope?/i]; // is this necessary?
 var questions = [
   'Do I like games?',
   'How about trees, are they cool?',
@@ -58,13 +62,14 @@ var questions = [
   'Guess an integer between 1 and 20',
   'What is a movie that I\'ve watched?'
 ];
+
 var answers = [
-  'Yes',
-  'Yes',
-  'Yes',
-  'No',
-  'Yes',
-  'Correct answer: ' + random_number,
+  true,
+  true,
+  true,
+  false,
+  true,
+  random_number,
   [
     'The Matrix',
     'Big Trouble In Little China',
@@ -79,12 +84,69 @@ var answers = [
   ]
 ];
 var responses = [];
+var retry_number = 0;
+var correct = false;
 
-// // Clear the inside HTML of the game section
-// game_section.innerHTML = newli_newul_newli + 'Question' + endli_newli + 'My Answer' + endli_newli + 'Your Answer' + endli_endul_endli;
+// Ask for their name
+username = prompt('What is your name?');
+console.log('Asked for username. Var username : ' + username);
 
-// // Based on the number of questions, dynamically generate the list of questions,
-// // my answers, and their recorded response.
+// Validate their name: accept any string, reject '' and null
+// Validate two additional times, then give a bunk name. Still a fan of
+// 'George McSqueeb'.
+console.log('validating username');
+
+if (username === '' || username === null) {
+  console.log('username is \'\' or null, asking again');
+
+  while (retry_number < 2) {
+    retry_number++;
+    console.log('retry_number is less than 2, this is retry ' + retry_number);
+    username = prompt('No, really, please give a name. Retry #' + retry_number);
+    console.log('Prompted again. username : ' + username);
+    if (username !== '' && username !== null) {
+      console.log('good response received. username : ' + username);
+      retry_number = 0;
+      break; // This means they've given a good response, so break the while loop
+    }
+  }
+  retry_number = 0;
+  if (username === '' || username === null) username = 'George McSqueeb';
+  console.log('username: ' + username);
+}
+
+
+
+function guessing_game() {
+  /*
+  for each question in the questions array, ask the question.
+  Validate response on data type of current element in answers array
+  - boolean will check string input to see if it matches valid_yes array.
+  These are case-insensitive tests. loop through the yes array
+  break and push input to responses[i] if correct; 
+  regex.test(string) to see if the string matches the regex. Ask only once.
+  - If it's number, will have to multiply input 1 to force it to be a number:
+  What happens is that '2837' * 1 = 2837 is a number data type but doing the same to
+  a string results in NaN, so check for that, which will rule out all non
+  numbers; if it's a number, then test if it's the correct number. if it's
+  the correct number, push the input onto the responses array and break the
+  loop. give four total attempts, give retry # after first try
+  - object means we need to step into the array to check against each element, one
+  by one ; in each answer, create a regex from the string and use flag 'i' for
+  case insensitivity. use regex to test if input matches. If it does, push input
+  to responses array and break loop.; give six total attempts, give retry # after
+  first try
+
+  */
+}
+
+guessing_game();
+
+
+// */ Based on the number of questions, dynamically generate the list of questions,
+// my answers, and their recorded response.
+// */
+
 // for (var ii = 0; ii < questions.length; ii++) {
 //   var question = questions[ii];
 //   // sometimes answers is a list! If it is, then turn the answer into a list of
