@@ -12,9 +12,10 @@ Would I like a cookie? (yes)
 Is napping an important part of my day? (no)
 Coding is cool, right? (yes)
 Guess a random integer between 1 and 20: (random())
+Guess a movie I've watched
 
-For each question, take a prompt which allows only four results, two true and
-two false:
+For each true/false question, take a prompt which allows only four results, two
+true and two false:
 true: 'y', 'yes'
 false: 'n', and 'no'
 All other responses will default to an incorrect result, whatever that may be
@@ -49,6 +50,8 @@ var newli_newul_newli = '<li>\n<ul>\n<li>';
 var endli_newli = '</li>\n<li>';
 var endli_endul_endli = '</li>\n</ul>\n</li>';
 var yes_or_no = ' Y/Yes or N/No';
+var yes = ['y', 'yes', 'yus', 'ya', 'yup', 'yerp'];
+var no = ['n', 'no', 'nyu', 'nu', 'nope', 'nop'];
 var questions = [
   'Do I like games?',
   'How about trees, are they cool?',
@@ -58,13 +61,14 @@ var questions = [
   'Guess an integer between 1 and 20',
   'What is a movie that I\'ve watched?'
 ];
+
 var answers = [
-  'Yes',
-  'Yes',
-  'Yes',
-  'No',
-  'Yes',
-  'Correct answer: ' + random_number,
+  true,
+  true,
+  true,
+  false,
+  true,
+  random_number,
   [
     'The Matrix',
     'Big Trouble In Little China',
@@ -79,6 +83,54 @@ var answers = [
   ]
 ];
 var responses = [];
+var check_count = 0;
+
+// Ask for their name
+username = prompt('What is your name?');
+console.log('Asked for username. Var username : ' + username);
+
+// Validate their name: accept any string, reject '' and null
+// Validate two additional times, then give a bunk name. Still a fan of
+// 'George McSqueeb'.
+console.log('validating username');
+
+if (username === '' || username === null) {
+  console.log('username is \'\' or null, asking again');
+
+  while (check_count < 2) {
+    check_count++;
+    console.log('check_count is less than 2, this is attempt ' + check_count);
+    username = prompt('No, really, please give a name. Re-attempt #' + check_count);
+    console.log('Prompted again. username : ' + username);
+    if (username !== '' && username !== null) {
+      console.log('good response received. username : ' + username);
+      check_count = 0;
+      break; // This means they've given a good response, so break the while loop
+    }
+  }
+  check_count = 0;
+  if (username === '' || username === null) username = 'George McSqueeb';
+  console.log('username: ' + username);
+}
+
+
+
+function guessing_game() {
+  // for each question in the questions array, ask the question.
+  // Retry 2 times, 3 guesses total.
+  // Validate based on data type of current element in answers array
+  // - boolean will have to take a verbal response in the yes or no arrays, so loop
+  // through those arrays; if it's correct, then push the input onto the reponses array
+  // - number will have to multiply the result by 1 to force it to be a number:
+  // What happens is that '0' * 1 = 0 is a number data type but doing the same to
+  // a string results in NaN, so check for that, which will rule out all non
+  // numbers; if it's the correct number, push the input onto the responses array
+  // - object means we need to step into the array to check against each element, one
+  // by one ; if input (.toLowerCase()) matches an element in the answer array
+  // (.toLowerCase()) then push the input onto the reponses array
+}
+
+guessing_game();
 
 // // Clear the inside HTML of the game section
 // game_section.innerHTML = newli_newul_newli + 'Question' + endli_newli + 'My Answer' + endli_newli + 'Your Answer' + endli_endul_endli;
