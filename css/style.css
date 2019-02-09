@@ -44,19 +44,24 @@ nav li {
   overflow: auto;
   width: 100%;
 }
-#game_section li ul{
-  display: inline-block;
-  width: 100%;
-  overflow: auto;
-}
-#game_section li ul li{
-  display: inline-block;
+#game_section ul {
+  display: inline;
   list-style: none;
-  float: left;
-  width: 40%;
 }
-#game_section li ul li:nth-child(even){
-  width: 60%;
+#game_section li ul li {
+  display: inline;
+  /* list-style: none; */
+  /* float: left; */
+  width: 30%;
+}
+#game_section li ul li:first-child {
+  width: 40%;
+  clear: left;
+}
+#game_section li ul li ul li {
+  display: block;
+  
+  list-style-type: disc;
 }
 
 .title {

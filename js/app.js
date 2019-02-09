@@ -44,11 +44,11 @@ var random_number = Math.floor(Math.random() * 20) + 1;
 // For example, game_section.innerHTML lets you get or set the HTML inside of the
 // game section.
 
+var game_section = document.querySelector('#game_section');
 var newli_newul_newli = '<li>\n<ul>\n<li>';
 var endli_newli = '</li>\n<li>';
 var endli_endul_endli = '</li>\n</ul>\n</li>';
-var game_section = document.querySelector('#game_section');
-var yes_or_no = ' Y/Yes or N/No'
+var yes_or_no = ' Y/Yes or N/No';
 var questions = [
   'Do I like games?',
   'How about trees, are they cool?',
@@ -59,7 +59,12 @@ var questions = [
   'What is a movie that I\'ve watched?'
 ];
 var answers = [
-  'Yes', 'Yes', 'Yes', 'No', 'Yes', random_number,
+  'Yes',
+  'Yes',
+  'Yes',
+  'No',
+  'Yes',
+  'Correct answer: ' + random_number,
   [
     'The Matrix',
     'Big Trouble In Little China',
@@ -69,15 +74,22 @@ var answers = [
     'Kingsmen',
     'Fast and Furious',
     'Zootopia',
-    'The Fantastic Mr. Fox'
+    'The Fantastic Mr. Fox',
+    'Black Panther'
   ]
 ];
 var responses = [];
 
-game_section.innerHTML = '';
-for (var ii = 0; ii < questions.length; ii++) {
-  game_section.innerHTML = game_section.innerHTML + newli_newul_newli + questions[ii] + endli_newli + answers[ii] + endli_endul_endli;
-}
+// // Clear the inside HTML of the game section
+// game_section.innerHTML = newli_newul_newli + 'Question' + endli_newli + 'My Answer' + endli_newli + 'Your Answer' + endli_endul_endli;
+
+// // Based on the number of questions, dynamically generate the list of questions,
+// // my answers, and their recorded response.
+// for (var ii = 0; ii < questions.length; ii++) {
+//   var question = questions[ii];
+//   // sometimes answers is a list! If it is, then turn the answer into a list of
+//   game_section.innerHTML = game_section.innerHTML + newli_newul_newli + question + endli_newli + answers[ii] + endli_endul_endli;
+// }
 
 // Ask for their name
 // username = prompt('What is your name?');
