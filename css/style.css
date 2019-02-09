@@ -40,22 +40,22 @@ nav li {
   margin: 5px 20px 5px 5px;
 }
 
-#game_sec {
+#game_section {
   overflow: auto;
   width: 100%;
 }
-#game_sec li ul{
+#game_section li ul{
   display: inline-block;
   width: 100%;
   overflow: auto;
 }
-#game_sec li ul li{
+#game_section li ul li{
   display: inline-block;
   list-style: none;
   float: left;
   width: 40%;
 }
-#game_sec li ul li:nth-child(even){
+#game_section li ul li:nth-child(even){
   width: 60%;
 }
 

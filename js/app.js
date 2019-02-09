@@ -38,10 +38,19 @@ var count = 0;
 // Add 1 to make it 1 to 20
 var random_number = Math.floor(Math.random() * 20) + 1;
 
+// JavaScript DOM: document.querySelector() uses a CSS selector to return a node
+// on the webpage. This node object can be used to let you access the items on
+// the HTML page.
+// For example, game_section.innerHTML lets you get or set the HTML inside of the
+// game section.
 
-var random_display = document.getElementById('random_display');
+var newli_newul_newli = '<li>\n<ul>\n<li>';
+var endli_newli = '</li>\n<li>';
+var endli_endul_endli = '</li>\n</ul>\n</li>';
+var game_section = document.querySelector('#game_section');
+var yes_or_no = ' Y/Yes or N/No'
 var questions = [
-  'Do I like games? Y/Yes or N/No',
+  'Do I like games?',
   'How about trees, are they cool?',
   'Would I like a cookie?',
   'Is napping an important part of my day?',
@@ -65,7 +74,13 @@ var answers = [
 ];
 var responses = [];
 
-random_display.innerText = random_number;
+game_section.innerHTML = '';
+for (var ii = 0; ii < questions.length; ii++) {
+  game_section.innerHTML = game_section.innerHTML + newli_newul_newli + questions[ii] + endli_newli + answers[ii] + endli_endul_endli;
+}
+
+// Ask for their name
+// username = prompt('What is your name?');
 
 // // Ask for username
 // console.log('Ask for name. var username');
