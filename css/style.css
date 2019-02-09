@@ -1,7 +1,7 @@
 
-* {
+/* * {
   outline: red 1px dashed;
-}
+} */
 body {
   width: 900px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -21,11 +21,8 @@ ol {
 ul {
   list-style: inside;
 }
-/* li {
-  padding-bottom: 5px;
-} */
 article {
-  line-height: 1.3;
+  line-height: 1.35;
 }
 
 nav {
@@ -43,25 +40,44 @@ nav li {
 #game_section {
   overflow: auto;
   width: 100%;
+  list-style: decimal inside;
 }
-#game_section ul {
-  display: inline;
+#game_section>li {
+  padding: 0 0 5px 0;
+}
+#game_section>li:first-child {
   list-style: none;
+  padding: 0 0 10px 1.1em;
+  font-weight: bold;
 }
-#game_section li ul li {
-  display: inline;
-  /* list-style: none; */
-  /* float: left; */
-  width: 30%;
+/* ULs inside the game_section list, used as containers for question item contents */
+#game_section>li>ul {
+  display: inline-block;
+  list-style: block inside;
+  vertical-align: top;
 }
-#game_section li ul li:first-child {
-  width: 40%;
-  clear: left;
+/* list items inside that, so questions, answers, and responses */
+#game_section>li>ul>li {
+  display: inherit;
+  list-style: none;
+  width: 225px;
+  vertical-align: top;
 }
-#game_section li ul li ul li {
-  display: block;
-  
-  list-style-type: disc;
+/* The first list item in unordered lists inside the game_section list 
+Which, in this case, is used for the question being asked.*/
+#game_section>li>ul>li:first-child {
+  width: 315px;
+}
+/* ULs inside ULs inside the game section list, AKA lists of answers */
+#game_section>li>ul>li>ul {
+  list-style: disc inside;
+  width: 100%;
+  padding-left: 0;
+}
+/* list items of answer lists */
+/* geeze, these got deep and specific... */
+#game_section>li>ul>li>ul>li {
+  display: list-item;
 }
 
 .title {
@@ -71,11 +87,12 @@ nav li {
 .subtitle {
   font-size: 24px;
   font-weight: italic;
+  margin: 5px 0 5px 0;
 }
 .section_title {
   font-size: 20px;
   font-weight: bold;
-  margin: 5px 0 15px 0;
+  margin: 5px 0 5px 0;
 }
 .hr {
   height: 1px;
