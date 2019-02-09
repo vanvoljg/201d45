@@ -30,8 +30,15 @@ Random integer is from 1 to 20. Math.random() returns in a range [0,1), so multi
 by 20, to get from [0,19), then add 1 to get 1 to 20.
 */
 
-var username, games, trees, cookie, nap, coding, count = 0;
+var username;
+var count = 0;
+
+// Math.random() returns a number between 0 and 1, not including 1
+// Multiply by 20 to get from 0 to 20, not in cluding 20
+// Add 1 to make it 1 to 20
 var random_number = Math.floor(Math.random() * 20) + 1;
+
+
 var random_display = document.getElementById('random_display');
 var questions = [
   'Do I like games? Y/Yes or N/No',
