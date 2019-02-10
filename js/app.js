@@ -143,13 +143,17 @@ function get_username() {
 
 
 function run_game() {
+  // game-loop variables
+  console.log('declaring game runtime variables');
+  var num_questions = questions.length;
+  var current_input, current_type;
   console.log('begin game question function definitions');
 
   // This function takes in an array of regexs and iterates through the array
   // to test the string against them; pushes the test string to the responses array
   // and pushes a happy result to the results array. Returns nothing.
   function regex_array_tester (regex_array, test_string) {
-    console.log('answer_tester function')
+    console.log('answer_tester function');
     console.log('testing string: ', test_string, '\nagainst regex array', regex_array);
 
     for (var ni = 0; ni < regex_array.length; ni++) {
@@ -165,23 +169,24 @@ function run_game() {
   }
 
   // This function asks questions when answer type is a boolean. Returns nothing.
-  function boolean_question () {
+  function boolean_question (qindex) {
     correct = false;
     console.log('boolean answer type');
-    current_input = prompt(questions[i] + yes_or_no);
-    console.log('asked boolean question: ' + questions[i], '\ninput: ' + current_input);
+    console.log('index #', qindex);
+    current_input = prompt(questions[qindex] + yes_or_no);
+    console.log('asked boolean question: ' + questions[qindex], '\ninput: ' + current_input);
 
     // for each element in the valid_(yes or no) test array, test the input to see if
     // it is valid. regex_var.test(string) will return true if the string is
     // matched by the regex, so push the input to the responses array
     // and push a positive result to the results array.
-    switch (answers[i]) {
+    switch (answers[qindex]) {
     case true: // true answers case
-      console.log('calling regex_array_tester(valid_yes, answers[i])');
+      console.log('calling regex_array_tester(valid_yes, current_input)');
       regex_array_tester(valid_yes, current_input);
       break;
     case false: // false answers case
-      console.log('calling regex_array_tester(valid_no, answers[i])');
+      console.log('calling regex_array_tester(valid_no, current_input)');
       regex_array_tester(valid_no, current_input);
     }
 
@@ -194,38 +199,43 @@ function run_game() {
     console.log('input tested, response and results pushed');
   }
 
-  function number_question (repeats) {
-    console.log('number answer type', repeats + ' repeats');
+  // This function takes current question index and total number of guesses
+  function number_question (qindex, guesses) {
+    console.log('number answer type,', guesses, 'guesses');
+    console.log('index #', qindex);
+
   }
 
-  function array_question (repeats) {
-    console.log('object question type, means array', repeats + ' repeats');
+  function array_question (qindex, guesses) {
+    console.log('object question type, means array,', guesses, 'guesses');
+    console.log('index #', qindex);
   }
 
   console.log('begin game');
-  var num_questions = questions.length;
-  var current_input, current_type;
   console.log('number of questions to be asked: ' + num_questions);
 
   console.log('begin main game loop');
   for (var i = 0; i < num_questions; i++) {
-    console.log('entering loop, determining answer type');
+    console.log('entered loop, determining answer type');
     current_type = typeof(answers[i]);
-    console.log('current type is:'+current_type);
+    console.log('current type is:', current_type);
 
     // The current answer type determines which type of question is asked
     switch (current_type) {
     case 'boolean':
-      console.log('calling boolean question');
-      boolean_question();
+      // console.log('calling boolean question');
+      // boolean_question(i);
+      // console.log('boolean question complete, responses and results both have new elements');
       break;
     case 'number': // number answers give 4 guesses
       console.log('calling numer question');
-      number_question(4);
+      number_question(i, 4);
+      console.log('number question complete, responses and results both have new elements');
       break;
     case 'object': // array-based answers give 6 guesses
       console.log('calling array question');
-      array_question(6);
+      array_question(i, 6);
+      console.log('array question complete, responses and results both have new elements');
     }
 
     // current_input = prompt(questions[i]);
