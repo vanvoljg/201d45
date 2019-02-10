@@ -28,8 +28,6 @@ Random integer is from 1 to 20. Math.random() returns in a range [0,1), so multi
 by 20, to get from [0,19), then add 1 to get 1 to 20.
 */
 console.log('declaring variables');
-var username;
-var count = 0;
 
 // Math.random() returns a number between 0 and 1, not including 1
 // Multiply by 20 to get from 0 to 20, not in cluding 20
@@ -44,10 +42,9 @@ var random_number = Math.floor(Math.random() * 20) + 1;
 var game_section = document.querySelector('#game_section');
 var game_question_template = document.querySelector('#question_template');
 
-var newli_newul_newli = '<li>\n<ul>\n<li>';
-var endli_newli = '</li>\n<li>';
-var endli_endul_endli = '</li>\n</ul>\n</li>';
-var yes_or_no = ' Y/Yes or N/No';
+// var newli_newul_newli = '<li>\n<ul>\n<li>';
+// var endli_newli = '</li>\n<li>';
+// var endli_endul_endli = '</li>\n</ul>\n</li>';
 // regular expressions are a fancy way of matching and explanation of their use
 // is beyond the scope of this document.
 // Find more information at https://www.regular-expressions.info/quickstart.html
@@ -63,6 +60,7 @@ var valid_no = [
   /^\s*n\s*$/i,
   /^\s*n[oa]y?\s*$/i,
   /^\s*nope?\s*$/i,
+  /^\s*nyu\s*$/i,
   /^\s*false\s*$/i,
   /^\s*f\s*$/i,
   /^\s*negative\s*$/i,
@@ -102,6 +100,10 @@ var responses = [];
 var results = [];
 var retry_number = 0;
 var correct = false;
+var username;
+var correct_questions = 0;
+var yes_or_no = ' Y/Yes/True/T or N/No/False/F';
+
 console.log('variables instantiated');
 
 function get_username() {
@@ -139,40 +141,37 @@ function get_username() {
   console.log('username request complete');
 }
 
-// get_username();
-
-
 function run_game() {
   // game-loop variables
-  console.log('declaring game runtime variables');
+  console.log('entering game function, declaring game runtime variables');
   var num_questions = questions.length;
   var current_input, current_type;
   console.log('begin game question function definitions');
 
   // This function takes in an array of regexs and iterates through the array
-  // to test the string against them; pushes the test string to the responses array
-  // and pushes a happy result to the results array. Returns nothing.
-  function regex_array_tester (regex_array, test_string) {
+  // to test the string against them. Returns true/false.
+  function test_regex_array (regex_array, test_string) {
     console.log('answer_tester function');
     console.log('testing string: ', test_string, '\nagainst regex array', regex_array);
 
     for (var ni = 0; ni < regex_array.length; ni++) {
       if (regex_array[ni].test(test_string)) {
-        console.log(regex_array[ni], 'matched, pushing input and result');
-        responses.push(test_string);
-        results.push('Correct!');
-        correct = true;
-        break;
+        console.log(regex_array[ni], 'matched, returning true');
+        return true;
       }
-      console.log(regex_array[ni], 'not matched, next iteration');
+      console.log(regex_array[ni], 'not matched, next element');
     }
+    console.log('not matched, returning false');
+    return false;
   }
 
-  // This function asks questions when answer type is a boolean. Returns nothing.
+  // This function asks questions for answer type boolean. Returns nothing.
   function boolean_question (qindex) {
-    correct = false;
+    correct = false; // Always assume they didn't give a correct answer, so we
+    // only really need to test for true cases.
     console.log('boolean answer type');
     console.log('index #', qindex);
+
     current_input = prompt(questions[qindex] + yes_or_no);
     console.log('asked boolean question: ' + questions[qindex], '\ninput: ' + current_input);
 
@@ -182,32 +181,68 @@ function run_game() {
     // and push a positive result to the results array.
     switch (answers[qindex]) {
     case true: // true answers case
-      console.log('calling regex_array_tester(valid_yes, current_input)');
-      regex_array_tester(valid_yes, current_input);
-      break;
-    case false: // false answers case
-      console.log('calling regex_array_tester(valid_no, current_input)');
-      regex_array_tester(valid_no, current_input);
-    }
+      console.log('calling test_regex_array(valid_yes, current_input)');
+      correct = test_regex_array(valid_yes, current_input);
 
-    // if still not a correct answer, push input to responses and negative to results
-    if (!correct) {
-      console.log(current_input, 'is not a correct answer, pushing input and wrong result');
-      responses.push(current_input);
-      results.push('WRONG!');
+      if (correct) {
+        responses.push(current_input);
+        results.push('Correct!');
+      } else {
+        responses.push(current_input);
+        results.push('WRONG!');
+      }
+      break;
+
+    case false: // false answers case
+      console.log('calling test_regex_array(valid_no, current_input)');
+      correct = test_regex_array(valid_no, current_input);
+
+      if (correct) {
+        responses.push(current_input);
+        results.push('Correct!');
+      } else {
+        responses.push(current_input);
+        results.push('WRONG!');
+      }
     }
     console.log('input tested, response and results pushed');
   }
 
   // This function takes current question index and total number of guesses
-  function number_question (qindex, guesses) {
-    console.log('number answer type,', guesses, 'guesses');
+  function number_question (qindex, allowed_guesses) {
+    correct = false;
+    console.log('number answer type,', allowed_guesses, 'guesses');
     console.log('index #', qindex);
 
+    current_input = prompt(questions[qindex]);
+    console.log('asked:', questions[qindex], '\nreceived:', current_input);
+
+    // test input. if it's not a number, if it's blank, or if it's wrong, ask
+    // again. if it's correct, push input to responses array and a good result
+    // to results array also, if it's not the correct number, ask again.
+    if (isNaN(current_input * 1) || current_input === '' || (current_input * 1) !== answers[qindex]) {
+      console.log('input is not a number or is not correct, ask again');
+
+      for (retry_number = 1; retry_number < allowed_guesses; retry_number++) {
+        console.log('entering retry loop. retry_nubmer:', retry_number + '.');
+        current_input = prompt('Please try again. Retry #' + retry_number);
+        console.log('asked again. received:', current_input);
+
+        // If they gave a good answer, push it and break loop, otherwise continue
+        // loop and ask again.
+        if ((current_input * 1) === answers[qindex]) {
+          console.log('good response received:', current_input, 'break loop');
+          responses.push(current_input);
+          results.push('Correct!');
+          correct = true;
+          break;
+        }
+      }
+    }
   }
 
   function array_question (qindex, guesses) {
-    console.log('object question type, means array,', guesses, 'guesses');
+    console.log('array question type,', guesses, 'guesses');
     console.log('index #', qindex);
   }
 
@@ -223,18 +258,18 @@ function run_game() {
     // The current answer type determines which type of question is asked
     switch (current_type) {
     case 'boolean':
-      // console.log('calling boolean question');
+      console.log('calling boolean question');
       // boolean_question(i);
-      // console.log('boolean question complete, responses and results both have new elements');
+      console.log('boolean question complete, responses and results both have new elements');
       break;
     case 'number': // number answers give 4 guesses
       console.log('calling numer question');
-      number_question(i, 4);
+      // number_question(i, 4);
       console.log('number question complete, responses and results both have new elements');
       break;
     case 'object': // array-based answers give 6 guesses
       console.log('calling array question');
-      array_question(i, 6);
+      // array_question(i, 6);
       console.log('array question complete, responses and results both have new elements');
     }
 
@@ -263,6 +298,7 @@ function run_game() {
   */
 }
 
+// get_username();
 run_game();
 
 
