@@ -139,6 +139,7 @@ function run_game() {
 
   console.log('variables declared, begin game question function definitions');
 
+  // REGEX ARRAY TEST FUNCTION DEFINITION
   // This function takes in an array of regexs and iterates through the array
   // to test the string against them. Returns true/false.
   function test_regex_array (regex_array, test_string) {
@@ -156,6 +157,7 @@ function run_game() {
     return false;
   }
 
+  // BOOLEAN QUESTION FUNCTION DEFINITION
   // This function asks questions for answer type boolean. Returns nothing, but
   // will push input to the responses array and will push either 'Correct!' or 
   // 'WRONG!' to the results array.
@@ -194,8 +196,10 @@ function run_game() {
       results.push('WRONG!');
     }
     console.log('boolean question complete, response and results pushed');
+    alert('Next question!');
   }
 
+  // NUMBER QUESTION FUNCTION DEFINITION
   // This function takes current question index and total number of guesses, returns
   // nothing, tests to see if input matches answer
   function number_question (qindex, allowed_guesses) {
@@ -210,21 +214,34 @@ function run_game() {
     // test input. if it's not a number, if it's blank, or if it's wrong, ask
     // again. if it's correct, push input to responses array and a good result
     // to results array also, if it's not the correct number, ask again.
+    // If it's too low, report that before asking again. If it's too high, do that.
     console.log('validating input');
-    if (isNaN(current_input * 1) || current_input === '' || (current_input * 1) !== answers[qindex]) {
-      console.log('input is not a number or is not correct, ask again');
+    if ((current_input * 1) !== answers[qindex]) {
+      console.log('input is not not correct, ask again');
 
+      // if the input is a number, but is out of range, alert before asking again.
+      if (typeof(parseInt(current_input)) === 'number' && !isNaN(parseInt(current_input))) {
+        if (current_input < 1) alert('The number you entered was too low. It should be between 1 and 20.');
+        else if (current_input > 20) alert('The number you entered was too high. It should be between 1 and 20.');
+      }
       for (retry_number = 1; retry_number < allowed_guesses; retry_number++) {
         console.log('entering retry loop. retry_nubmer:', retry_number + '.');
-        current_input = prompt('Incorrect. Please try again. Retry #' + retry_number);
+        current_input = prompt('Please try again. Retry #' + retry_number);
         console.log('asked again. received:', current_input);
 
+        // If they give an answer outside the range 1 to 20, tell them it's too
+        // low or too high, and then loop again.
         // If they gave a good answer, push it and break loop, otherwise continue
         // loop and ask again.
         if ((current_input * 1) === answers[qindex]) {
           console.log('good response received, correct=true, break loop');
           correct = true;
           break;
+        }
+        // If the input is a number, but is out of range, alert before asking again.
+        if (typeof(parseInt(current_input)) === 'number' && !isNaN(parseInt(current_input))) {
+          if (current_input < 1) alert('The number you entered was too low. It should be between 1 and 20.');
+          else if (current_input > 20) alert('The number you entered was too high. It should be between 1 and 20.');
         }
         console.log('no good response received, next loop iteration');
       }
@@ -247,6 +264,7 @@ function run_game() {
       results.push('After ' + allowed_guesses + ' guesses, you didn\'t get it!');
     }
     console.log('end number question, response and results pushed');
+    alert('Next question!');
   }
 
 
@@ -311,6 +329,7 @@ function run_game() {
       results.push('You used ' + allowed_guesses + ' guesses and none were correct...');
     }
     console.log('end array question, response and results pushed');
+    alert('Next question!');
   }
 
   console.log('game functions defined, begin game');
@@ -348,7 +367,7 @@ function build_results_page(){
 
 // get_username();
 run_game();
-build_results_page();
+// build_results_page();
 
 /* Based on the number of questions, dynamically generate the list of questions,
 my answers, and their recorded response.
