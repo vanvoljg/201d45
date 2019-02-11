@@ -36,7 +36,7 @@ var random_number = Math.floor(Math.random() * 20) + 1;
 // For example, game_section.innerHTML lets you get or set the HTML inside of the
 // game section.
 var game_section = document.querySelector('#game_section');
-var game_question_template = document.querySelector('#question_template');
+// var game_question_template = document.querySelector('#question_template');
 
 var questions = [
   'Do I like games?',
@@ -159,7 +159,7 @@ function run_game() {
 
   // BOOLEAN QUESTION FUNCTION DEFINITION
   // This function asks questions for answer type boolean. Returns nothing, but
-  // will push input to the responses array and will push either 'Correct!' or 
+  // will push input to the responses array and will push either 'Correct!' or
   // 'WRONG!' to the results array.
   function boolean_question (qindex) {
     correct = false; // Always assume they didn't give a correct answer, so we
@@ -366,206 +366,39 @@ function run_game() {
 
 function build_results_page(){
   console.log('build results page function start');
-  console.log('build results page function finish');
+  var li_el = document.createElement('li');
+  var ul_el = document.createElement('ul');
+
+  var li1, li2, li3, ulj, append_node;
+
+  for (var j = 0; j < number_of_questions ; j++) {
+
+    // create first li with question in it
+    li1 = li_el.cloneNode(false);
+    li1.textContent = questions[j];
+
+    // create next li with response in it
+    li2 = li_el.cloneNode(false);
+    li2.textContent = responses[j];
+
+    // create last li with results in it
+    li3 = li_el.cloneNode(false);
+    li3.textContent = results[j];
+
+    // create the ul node to hold the list items, append list items
+    ulj = ul_el.cloneNode(false);
+    ulj.appendChild(li1);
+    ulj.appendChild(li2);
+    ulj.appendChild(li3);
+
+    // create the li node which gets added to the page
+    append_node = li_el.cloneNode(false);
+    append_node.appendChild(ulj);
+
+    game_section.appendChild(append_node);
+  }
 }
 
-// get_username();
-// run_game();
-// build_results_page();
-
-/* Based on the number of questions, dynamically generate the list of questions,
-my answers, and their recorded response.
-Depending on the data type of the answer, we'll have to do a couple things.
-Boolean, the string added to the textContent will need to be created.
-true = 'Yes', false = 'No'
-*/
-
-// for (var j = 0; j < questions.length; j++) {
-//   var question = questions[j];
-//   // sometimes answers is a list! If it is, then turn the answer into a list of
-//   game_section.innerHTML = game_section.innerHTML + newli_newul_newli + question + endli_newli + answers[ii] + endli_endul_endli;
-// }
-
-// Ask for their name
-// username = prompt('What is your name?');
-
-// // Ask for username
-// console.log('Ask for name. var username');
-// username = prompt('What is your name?');
-// console.log('username:' + username);
-
-// // If no username (or they click cancel), then ask again
-// if (username === '' | username === null) {
-//   console.log('username is invalid, ask again');
-//   username = prompt('No, really, what\'s your name?');
-//   console.log('username:' + username);
-// }
-// if (username === '' | username === null) {
-//   console.log('username still invalid, so using default');
-//   username = 'George McSqueeb';
-//   console.log('username:' + username);
-// }
-// alert('Good to meet you, ' + username + '. Let\'s play a game!');
-
-// // Do I like games? (yes)
-// // Store result in games
-// console.log('Ask if I like games. var games')
-// answers[0] = prompt(questions[0]);
-// console.log('games:' + answers[0]);
-
-// // Anything other than a string counts as no, store 'no' in games
-// if (typeof(games) !== 'string') {
-//   answers[0] = 'no';
-//   console.log('games:' + answers[0]);
-// }
-
-// // Games is guaranteed to be a string at this point. Convert to lowercase.
-// // Check for 'yes' cases, otherwise change games to 'no'
-// games = answers[0].toLowerCase();
-// console.log('games:' + games);
-// switch (games) {
-// case 'y':
-// case 'yes':
-//   games = 'yes';
-//   count++;
-//   console.log('games:' + games, 'count:' + count);
-//   break;
-// default:// anything else
-//   games = 'no';
-//   console.log('games:' + games, 'count:' + count);
-// }
-
-// // How about trees, are they cool? (yes)
-// // Store result in trees
-// trees = prompt('How about trees, are they cool? Y/Yes or N/No');
-// console.log('trees:' + trees);
-
-// // Check for string, otherwise store 'no' in trees
-// if (typeof(trees) !== 'string') {
-//   trees = 'no';
-//   console.log('trees:' + trees);
-// }
-
-// // Trees is a string; make it lowercase; check for 'yes' cases, otherwise
-// // store 'no' in trees
-// trees = trees.toLowerCase();
-// console.log('trees:' + trees);
-// switch (trees) {
-// case 'y':
-// case 'yes':
-//   trees = 'yes';
-//   count++;
-//   console.log('trees:' + trees, 'count:' + count);
-//   break;
-// default: // anything else
-//   trees = 'no';
-//   console.log('trees:' + trees, 'count:' + count);
-// }
-
-// // Would I like a cookie? (yes)
-// // Store result in cookie
-// cookie = prompt('Would I like a cookie? Y/Yes or N/No');
-// console.log('cookie:' + cookie);
-
-// // Check if string; otherwise store 'no' in cookie
-// if (typeof(cookie) !== 'string') {
-//   cookie = 'no';
-//   console.log('cookie:' + cookie);
-// }
-
-// // Make cookie lowercase, check for 'yes' cases, otherwise cookie = 'no'
-// cookie = cookie.toLowerCase();
-// console.log('cookie:' + cookie);
-// switch (cookie) {
-// case 'y':
-// case 'yes':
-//   cookie = 'yes';
-//   count++;
-//   console.log('cookie:' + cookie, 'count:' + count);
-//   break;
-// default:
-//   cookie = 'no';
-//   console.log('cookie:' + cookie, 'count:' + count);
-// }
-
-// // Is napping an important part of my day? (no)
-// // Store result in nap
-// nap = prompt('Is napping an important part of my day? Y/Yes or N/No');
-// console.log('nap:' + nap);
-
-// // If nap is not a string, make nap = 'yes'
-// if (typeof(nap) !== 'string') {
-//   nap = 'yes';
-//   console.log('nap:' + nap);
-// }
-
-// // Make nap lowercase, check for 'no' cases, increment count
-// // otherwise nap = no, do not increment count
-// nap = nap.toLowerCase();
-// console.log('nap:' + nap);
-// switch (nap) {
-// case 'n':
-// case 'no':
-//   nap = 'no';
-//   count++;
-//   console.log('nap:' + nap, 'count:' + count);
-//   break;
-// default:
-//   nap = 'yes';
-//   console.log('nap:' + nap, 'count:' + count);
-// }
-
-// // Coding is cool, right? (yes)
-// coding = prompt('Coding is cool, right? Y/Yes or N/No');
-// console.log('coding:' + coding);
-
-// // If coding is not a string, make coding = 'no'
-// if (typeof(coding) !== 'string') {
-//   coding = 'no';
-//   console.log('coding:' + coding);
-// }
-
-// // Make coding lowercase, check for 'yes' cases, otherwise coding = no
-// coding = coding.toLowerCase();
-// console.log('coding:' + coding);
-// switch (coding) {
-// case 'y':
-// case 'yes':
-//   coding = 'yes';
-//   count++;
-//   console.log('coding:' + coding, 'count:' + count);
-//   break;
-// default:
-//   coding = 'no';
-//   console.log('coding:' + coding, 'count:' + count);
-// }
-
-// // Game complete, now display results.
-// // Pop up an alert with all given responses and the user's final score
-// alert('Hey, ' + username + ', you finished the game! Let\'s see how you did.');
-// alert('Question 1: "Do I like games?" You said ' + games + '\n\
-// Question 2: "How about trees, are they cool?" You said ' + trees +'\n\
-// Question 3: "Would I like a cookie?" You said ' + cookie + '\n\
-// Question 4: "Is napping an important part of my day?" You said ' + nap + '\n\
-// Question 5: "Coding is cool, right?" You said ' + coding);
-// alert('You got ' + count + ' of 5 correct');
-// // Then add some flavor for how well they did
-// switch (count) {
-// case 0:
-//   alert('I don\'t think you know me at all....');
-//   break;
-// case 1:
-//   alert('Not so good....');
-//   break;
-// case 2:
-//   alert('Fewer than half correct.');
-//   break;
-// case 3:
-//   alert('More than half right. Not too bad.');
-//   break;
-// case 4:
-//   alert('Only one wrong, nice!');
-//   break;
-// default:
-//   alert('You got them all right! Great!');
-// }
+get_username();
+run_game();
+build_results_page();
