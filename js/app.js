@@ -15,13 +15,9 @@ Coding is cool, right? (yes)
 Guess a random integer between 1 and 20: (random())
 Guess a movie I've watched
 
-For each true/false question, take a prompt which allows anything beginning with
-'y' to mean true and allows anything starting wtih 'n' to mean false. Case does
-not matter.
-During response checks, correct responses are normalized: 'yes' or 'no' are
-the only two responses any of these variables should end up with at the end.
-
-Each correct response increments count.
+For each true/false question, take a prompt which allows a range of affirmative
+and negative responses.
+Each correct response increments questions_correct.
 
 At the very end, print all responses and the number correct out of answers.length
 Random integer is from 1 to 20. Math.random() returns in a range [0,1), so multiply
@@ -42,30 +38,6 @@ var random_number = Math.floor(Math.random() * 20) + 1;
 var game_section = document.querySelector('#game_section');
 var game_question_template = document.querySelector('#question_template');
 
-// var newli_newul_newli = '<li>\n<ul>\n<li>';
-// var endli_newli = '</li>\n<li>';
-// var endli_endul_endli = '</li>\n</ul>\n</li>';
-// regular expressions are a fancy way of matching and explanation of their use
-// is beyond the scope of this document.
-// Find more information at https://www.regular-expressions.info/quickstart.html
-// Also at https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
-var valid_yes = [
-  /^\s*y\s*$/i,
-  /^\s*y[eauai][ps]?\s*$/i,
-  /^\s*true\s*$/i,
-  /^\s*t\s*$/i,
-  /^\s*affirmative\s*$/i
-];
-var valid_no = [
-  /^\s*n\s*$/i,
-  /^\s*n[oa]y?\s*$/i,
-  /^\s*nope?\s*$/i,
-  /^\s*nyu\s*$/i,
-  /^\s*false\s*$/i,
-  /^\s*f\s*$/i,
-  /^\s*negative\s*$/i,
-  /^\s*negatory\s*$/i
-];
 var questions = [
   'Do I like games?',
   'How about trees, are they cool?',
@@ -75,7 +47,6 @@ var questions = [
   'Guess an integer between 1 and 20',
   'What is a movie that I\'ve watched?'
 ];
-
 var answers = [
   true,
   true,
@@ -98,11 +69,9 @@ var answers = [
 ];
 var responses = [];
 var results = [];
-var retry_number = 0;
-var correct = false;
 var username;
-var correct_questions = 0;
-var yes_or_no = ' Y/Yes/True/T or N/No/False/F';
+var questions_correct = 0;
+var number_of_questions = questions.length;
 
 console.log('variables instantiated');
 
@@ -120,18 +89,16 @@ function get_username() {
   if (username === '' || username === null) {
     console.log('username is \'\' or null, asking again');
 
-    while (retry_number < 2) {
-      retry_number++;
-      console.log('retry_number is less than 2, this is retry ' + retry_number);
+    for (var retry_number = 1; retry_number < 2; retry_number++) {
+      console.log('this is retry ' + retry_number);
       username = prompt('No, really, please give a name. Retry #' + retry_number);
-      console.log('Prompted again. username : ' + username);
+      console.log('Prompted again. received: ' + username);
+
       if (username !== '' && username !== null) {
-        console.log('good response received. username : ' + username);
-        retry_number = 0;
+        console.log('good response received :', username);
         break; // This means they've given a good response, so break the while loop
       }
     }
-    retry_number = 0;
     if (username === '' || username === null) {
       console.log('no good response, give them something they\'ll regret');
       username = 'George McSqueeb';
@@ -142,17 +109,41 @@ function get_username() {
 }
 
 function run_game() {
-  // game-loop variables
   console.log('entering game function, declaring game runtime variables');
-  var num_questions = questions.length;
+  // regular expressions are a fancy way of matching and explanation of their use
+  // is beyond the scope of this document.
+  // Find more information at https://www.regular-expressions.info/quickstart.html
+  // Also at https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
+  var valid_yes = [
+    /^\s*y\s*$/i,
+    /^\s*y[eauai][ps]?\s*$/i,
+    /^\s*true\s*$/i,
+    /^\s*t\s*$/i,
+    /^\s*affirmative\s*$/i,
+    /^\s*absolutely\s*$/i
+  ];
+  var valid_no = [
+    /^\s*n\s*$/i,
+    /^\s*n[oa]y?\s*$/i,
+    /^\s*nope?\s*$/i,
+    /^\s*nyu\s*$/i,
+    /^\s*false\s*$/i,
+    /^\s*f\s*$/i,
+    /^\s*negative\s*$/i,
+    /^\s*negatory\s*$/i
+  ];
+  var yes_or_no = 'Y/Yes/True/T or N/No/False/F';
   var current_input, current_type;
-  console.log('begin game question function definitions');
+  var retry_number = 0;
+  var correct = false;
+
+  console.log('variables declared, begin game question function definitions');
 
   // This function takes in an array of regexs and iterates through the array
   // to test the string against them. Returns true/false.
   function test_regex_array (regex_array, test_string) {
-    console.log('answer_tester function');
-    console.log('testing string: ', test_string, '\nagainst regex array', regex_array);
+    console.log('test_regex_array function');
+    console.log('testing string:', test_string, '\nagainst regex array', regex_array);
 
     for (var ni = 0; ni < regex_array.length; ni++) {
       if (regex_array[ni].test(test_string)) {
@@ -161,58 +152,57 @@ function run_game() {
       }
       console.log(regex_array[ni], 'not matched, next element');
     }
-    console.log('not matched, returning false');
+    console.log('test_regex_array complete, returning false');
     return false;
   }
 
-  // This function asks questions for answer type boolean. Returns nothing.
+  // This function asks questions for answer type boolean. Returns nothing, but
+  // will push input to the responses array and will push either 'Correct!' or 
+  // 'WRONG!' to the results array.
   function boolean_question (qindex) {
     correct = false; // Always assume they didn't give a correct answer, so we
     // only really need to test for true cases.
-    console.log('boolean answer type');
+    console.log('begin boolean_question type, one guess allowed');
     console.log('index #', qindex);
 
-    current_input = prompt(questions[qindex] + yes_or_no);
+    current_input = prompt(questions[qindex] + '\n' + yes_or_no);
     console.log('asked boolean question: ' + questions[qindex], '\ninput: ' + current_input);
 
     // for each element in the valid_(yes or no) test array, test the input to see if
     // it is valid. regex_var.test(string) will return true if the string is
     // matched by the regex, so push the input to the responses array
     // and push a positive result to the results array.
-    switch (answers[qindex]) {
-    case true: // true answers case
-      console.log('calling test_regex_array(valid_yes, current_input)');
+    console.log('validating input');
+    if (answers[qindex]) { // true answers case
+      console.log('answer true, calling test_regex_array(valid_yes, current_input)');
       correct = test_regex_array(valid_yes, current_input);
-
-      if (correct) {
-        responses.push(current_input);
-        results.push('Correct!');
-      } else {
-        responses.push(current_input);
-        results.push('WRONG!');
-      }
-      break;
-
-    case false: // false answers case
-      console.log('calling test_regex_array(valid_no, current_input)');
+    } else { // false answers case
+      console.log('answer false, calling test_regex_array(valid_no, current_input)');
       correct = test_regex_array(valid_no, current_input);
-
-      if (correct) {
-        responses.push(current_input);
-        results.push('Correct!');
-      } else {
-        responses.push(current_input);
-        results.push('WRONG!');
-      }
     }
-    console.log('input tested, response and results pushed');
+
+    // Input validated, now do something:
+    console.log('input validated, correct:', correct);
+    if (correct) {
+      responses.push(current_input);
+      results.push('Correct!');
+      questions_correct++;
+    } else {
+      // need to check if current_input is null; if it is, set current_input=''
+      if (current_input === null) current_input = '';
+      responses.push(current_input);
+      results.push('WRONG!');
+    }
+    console.log('boolean question complete, response and results pushed');
   }
 
-  // This function takes current question index and total number of guesses
+  // This function takes current question index and total number of guesses, returns
+  // nothing, tests to see if input matches answer
   function number_question (qindex, allowed_guesses) {
-    correct = false;
-    console.log('number answer type,', allowed_guesses, 'guesses');
+    console.log('begin number_question type,', allowed_guesses, 'guesses. answer is', answers[qindex]);
     console.log('index #', qindex);
+    correct = false;
+    retry_number = 0;
 
     current_input = prompt(questions[qindex]);
     console.log('asked:', questions[qindex], '\nreceived:', current_input);
@@ -220,87 +210,145 @@ function run_game() {
     // test input. if it's not a number, if it's blank, or if it's wrong, ask
     // again. if it's correct, push input to responses array and a good result
     // to results array also, if it's not the correct number, ask again.
+    console.log('validating input');
     if (isNaN(current_input * 1) || current_input === '' || (current_input * 1) !== answers[qindex]) {
       console.log('input is not a number or is not correct, ask again');
 
       for (retry_number = 1; retry_number < allowed_guesses; retry_number++) {
         console.log('entering retry loop. retry_nubmer:', retry_number + '.');
-        current_input = prompt('Please try again. Retry #' + retry_number);
+        current_input = prompt('Incorrect. Please try again. Retry #' + retry_number);
         console.log('asked again. received:', current_input);
 
         // If they gave a good answer, push it and break loop, otherwise continue
         // loop and ask again.
         if ((current_input * 1) === answers[qindex]) {
-          console.log('good response received:', current_input, 'break loop');
-          responses.push(current_input);
-          results.push('Correct!');
+          console.log('good response received, correct=true, break loop');
           correct = true;
           break;
         }
+        console.log('no good response received, next loop iteration');
       }
+      console.log('retry loop completed after', retry_number, 'retries');
+    } else correct = true; // first response is correct! Somehow! Cheaters!
+
+    // Input tests complete, now do something with it.
+    console.log('input validated, correct:', correct);
+    if (correct) {
+      responses.push(current_input);
+      var str = '';
+      if (retry_number === 0) str = 'only one guess!';
+      else str = (retry_number + 1) + ' guesses.';
+      results.push('Correct! It took you ' + str);
+      questions_correct++;
+    } else {
+      // need to check if current_input is null; if it is, set current_input=''
+      if (current_input === null) current_input = '';
+      responses.push(current_input);
+      results.push('After ' + allowed_guesses + ' guesses, you didn\'t get it!');
     }
+    console.log('end number question, response and results pushed');
   }
 
-  function array_question (qindex, guesses) {
-    console.log('array question type,', guesses, 'guesses');
+
+  // ARRAY QUESTION FUNCTION DEFINITION
+  // Takes current question number (to access question and answer arrays) and
+  // number of guesses allowed. Returns nothing. If a guess is correct, will push
+  // that input to responses array, and pushes correct to results array. After
+  // number of allowed guesses, pushes the final guess onto the responses array,
+  // and pushes incorrect to results array.
+  function array_question (qindex, allowed_guesses) {
+    console.log('begin array_question type,', allowed_guesses, 'guesses. answers are:', answers[qindex]);
     console.log('index #', qindex);
+    correct = false;
+    retry_number = 0;
+    var answer_regex_array = [];
+
+    //build test array
+    for (var ij = 0; ij < answers[qindex].length; ij++) {
+      answer_regex_array.push( new RegExp(answers[qindex][ij], 'i') );
+    }
+
+    current_input = prompt(questions[qindex]);
+    console.log('asked:', questions[qindex], '\nreceived:', current_input);
+
+    //test input
+    console.log('validating input');
+    //if bad, check from retry_number = 1 to retry_number < guesses
+    if (!test_regex_array(answer_regex_array, current_input)) {
+      console.log('input does not match one of the answers');
+
+      // ask the correct number of times, retry_number 1 to < guesses
+      for (retry_number = 1; retry_number < allowed_guesses; retry_number++) {
+        console.log('entering retry loop. retry_number:', retry_number);
+        current_input = prompt('Incorrect. Please try again. Retry #' +
+          retry_number + '\n' + questions[qindex]);
+        console.log('asked again. received:', current_input);
+
+        // if input received matches an answer, set correct=true, break loop
+        if (test_regex_array(answer_regex_array, current_input)) {
+          console.log('good response received, correct=true, break loop');
+          correct = true;
+          break;
+        }
+        console.log('no good response received, next loop iteration');
+      }
+      console.log('retry loop completed after', retry_number, 'retries');
+    } else correct = true; // Somehow guessed right the first time...
+
+    // Input tested, push results and input
+    console.log('input vaidated, correct:', correct);
+    if (correct) {
+      responses.push(current_input);
+      var str = '';
+      if (retry_number === 0) str = 'only one attempt!';
+      else str = (retry_number + 1) + ' attempts.';
+      results.push('Correct! It took you ' + str);
+      questions_correct++;
+    } else {
+      // need to check if current_input is null; if it is, set current_input=''
+      if (current_input === null) current_input = '';
+      responses.push(current_input);
+      results.push('You used ' + allowed_guesses + ' guesses and none were correct...');
+    }
+    console.log('end array question, response and results pushed');
   }
 
-  console.log('begin game');
-  console.log('number of questions to be asked: ' + num_questions);
+  console.log('game functions defined, begin game');
+  console.log('number of questions to be asked:', number_of_questions);
 
   console.log('begin main game loop');
-  for (var i = 0; i < num_questions; i++) {
-    console.log('entered loop, determining answer type');
+  for (var i = 0; i < number_of_questions; i++) {
+    console.log('entered game loop, determining answer type');
     current_type = typeof(answers[i]);
     console.log('current type is:', current_type);
 
     // The current answer type determines which type of question is asked
     switch (current_type) {
     case 'boolean':
-      console.log('calling boolean question');
-      // boolean_question(i);
-      console.log('boolean question complete, responses and results both have new elements');
+      console.log('calling boolean question for #', (i + 1));
+      boolean_question(i);
       break;
     case 'number': // number answers give 4 guesses
-      console.log('calling numer question');
-      // number_question(i, 4);
-      console.log('number question complete, responses and results both have new elements');
+      console.log('calling number question for #', (i + 1));
+      number_question(i, 4);
       break;
     case 'object': // array-based answers give 6 guesses
-      console.log('calling array question');
-      // array_question(i, 6);
-      console.log('array question complete, responses and results both have new elements');
+      console.log('calling array question for #', (i + 1));
+      array_question(i, 6);
     }
-
-    // current_input = prompt(questions[i]);
-    // console.log('response given: ' + current_input);
   }
-  /*
-  first need data type of current answer
-  for each question in the questions array, ask the question.
-  Validate response on data type of current element in answers array
-  - boolean will check string input to see if it matches valid_yes array.
-  These are case-insensitive tests. loop through the yes array
-  break and push input to responses[i] if correct; 
-  regex.test(string) to see if the string matches the regex. Ask only once.
-  - If it's number, will have to multiply input 1 to force it to be a number:
-  What happens is that '2837' * 1 = 2837 is a number data type but doing the same to
-  a string results in NaN, so check for that, which will rule out all non
-  numbers; if it's a number, then test if it's the correct number. if it's
-  the correct number, push the input onto the responses array and break the
-  loop. give four total attempts, give retry # after first try
-  - object means we need to step into the array to check against each element, one
-  by one ; in each answer, create a regex from the string and use flag 'i' for
-  case insensitivity. use regex to test if input matches. If it does, push input
-  to responses array and break loop.; give six total attempts, give retry # after
-  first try
-  */
+  console.log('Game complete. responses:', responses, '\nresults:', results);
+  console.log(questions_correct, 'correct out of', number_of_questions, 'total');
+}
+
+function build_results_page(){
+  console.log('build results page function start');
+  console.log('build results page function finish');
 }
 
 // get_username();
 run_game();
-
+build_results_page();
 
 /* Based on the number of questions, dynamically generate the list of questions,
 my answers, and their recorded response.
