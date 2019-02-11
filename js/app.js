@@ -196,7 +196,7 @@ function run_game() {
       results.push('WRONG!');
     }
     console.log('boolean question complete, response and results pushed');
-    alert('Next question!');
+    alert('Question complete');
   }
 
   // NUMBER QUESTION FUNCTION DEFINITION
@@ -264,7 +264,7 @@ function run_game() {
       results.push('After ' + allowed_guesses + ' guesses, you didn\'t get it!');
     }
     console.log('end number question, response and results pushed');
-    alert('Next question!');
+    alert('Question complete');
   }
 
 
@@ -329,7 +329,7 @@ function run_game() {
       results.push('You used ' + allowed_guesses + ' guesses and none were correct...');
     }
     console.log('end array question, response and results pushed');
-    alert('Next question!');
+    alert('Question complete');
   }
 
   console.log('game functions defined, begin game');
