@@ -223,6 +223,8 @@ function run_game() {
       if (typeof(parseInt(current_input)) === 'number' && !isNaN(parseInt(current_input))) {
         if (current_input < 1) alert('The number you entered was too low. It should be between 1 and 20.');
         else if (current_input > 20) alert('The number you entered was too high. It should be between 1 and 20.');
+        else if (current_input > answers[qindex]) alert('The number was too high.');
+        else alert ('The number was too low.');
       }
       for (retry_number = 1; retry_number < allowed_guesses; retry_number++) {
         console.log('entering retry loop. retry_nubmer:', retry_number + '.');
@@ -242,6 +244,8 @@ function run_game() {
         if (typeof(parseInt(current_input)) === 'number' && !isNaN(parseInt(current_input))) {
           if (current_input < 1) alert('The number you entered was too low. It should be between 1 and 20.');
           else if (current_input > 20) alert('The number you entered was too high. It should be between 1 and 20.');
+          else if (current_input > answers[qindex]) alert('The number was too high.');
+          else alert ('The number was too low.');
         }
         console.log('no good response received, next loop iteration');
       }
@@ -281,7 +285,7 @@ function run_game() {
     retry_number = 0;
     var answer_regex_array = [];
 
-    //build test array
+    //build test array from answers array, and add /i flag to make case-insensitive
     for (var ij = 0; ij < answers[qindex].length; ij++) {
       answer_regex_array.push( new RegExp(answers[qindex][ij], 'i') );
     }
@@ -366,7 +370,7 @@ function build_results_page(){
 }
 
 // get_username();
-run_game();
+// run_game();
 // build_results_page();
 
 /* Based on the number of questions, dynamically generate the list of questions,
